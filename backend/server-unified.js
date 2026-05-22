@@ -11,10 +11,28 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
+// Middleware para MIME types correctos
+app.use((req, res, next) => {
+  if (req.path.endsWith('.css')) {
+    res.type('text/css');
+  } else if (req.path.endsWith('.js')) {
+    res.type('application/javascript');
+  }
+  next();
+});
+
 // Servir archivos estáticos del frontend
 const distPath = path.join(__dirname, '../frontend/dist');
 if (fs.existsSync(distPath)) {
-  app.use(express.static(distPath));
+  app.use(express.static(distPath, {
+    setHeaders: (res, path) => {
+      if (path.endsWith('.css')) {
+        res.set('Content-Type', 'text/css; charset=utf-8');
+      } else if (path.endsWith('.js')) {
+        res.set('Content-Type', 'application/javascript; charset=utf-8');
+      }
+    }
+  }));
 }
 
 // Configurar multer

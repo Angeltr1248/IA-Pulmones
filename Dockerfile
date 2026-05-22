@@ -2,8 +2,15 @@ FROM node:22-slim
 
 WORKDIR /app
 
-# Instalar Python (necesario para predicciones)
-RUN apt-get update && apt-get install -y python3 python3-pip && rm -rf /var/lib/apt/lists/*
+# Instalar Python y dependencias (necesario para predicciones)
+RUN apt-get update && apt-get install -y \
+    python3 \
+    python3-pip \
+    python3-venv \
+    && rm -rf /var/lib/apt/lists/*
+
+# Instalar TensorFlow y dependencias de Python
+RUN pip3 install --no-cache-dir tensorflow keras numpy pillow
 
 # Copiar archivos
 COPY package.json ./
