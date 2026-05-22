@@ -1,1 +1,1 @@
-web: cd backend && node server-unified.js
+web: npm run start

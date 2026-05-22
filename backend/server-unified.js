@@ -1,13 +1,11 @@
-import express from 'express';
-import multer from 'multer';
-import cors from 'cors';
-import { spawn } from 'child_process';
-import fs from 'fs';
-import path from 'path';
-import { fileURLToPath } from 'url';
+const express = require('express');
+const multer = require('multer');
+const cors = require('cors');
+const { spawn } = require('child_process');
+const fs = require('fs');
+const path = require('path');
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+const __dirname = __dirname || path.dirname(require.main.filename);
 
 const app = express();
 const PORT = process.env.PORT || 3001;

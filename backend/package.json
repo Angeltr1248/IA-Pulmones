@@ -3,10 +3,9 @@
   "version": "1.0.0",
   "description": "Backend for pneumonia detection using Keras model",
   "main": "server.js",
-  "type": "module",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js"
+    "dev": "node server.js"
   },
   "dependencies": {
     "express": "^4.18.2",
