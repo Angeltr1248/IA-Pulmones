@@ -23,7 +23,11 @@ app.use((req, res, next) => {
 
 // Servir archivos estáticos del frontend
 const distPath = path.join(__dirname, '../frontend/dist');
+console.log(`📁 Buscando frontend en: ${distPath}`);
+console.log(`📁 Existe: ${fs.existsSync(distPath)}`);
+
 if (fs.existsSync(distPath)) {
+  console.log(`✅ Sirviendo frontend desde: ${distPath}`);
   app.use(express.static(distPath, {
     setHeaders: (res, path) => {
       if (path.endsWith('.css')) {
@@ -33,6 +37,9 @@ if (fs.existsSync(distPath)) {
       }
     }
   }));
+} else {
+  console.log(`⚠️  Frontend dist no encontrado en ${distPath}`);
+  console.log(`📂 Contenido de ${__dirname}:`, fs.readdirSync(__dirname));
 }
 
 // Configurar multer

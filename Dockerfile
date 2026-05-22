@@ -26,9 +26,13 @@ RUN npm install --omit=dev
 WORKDIR /app/backend
 RUN npm install --omit=dev
 
-# Instalar y compilar frontend
+# Instalar y compilar frontend (necesita devDependencies para vite)
 WORKDIR /app/frontend
-RUN npm install && npm run build
+RUN npm install
+RUN npm run build
+
+# Verificar que dist se creó
+RUN test -d dist || (echo "ERROR: frontend/dist no se creó" && exit 1)
 
 # Volver a raíz
 WORKDIR /app
