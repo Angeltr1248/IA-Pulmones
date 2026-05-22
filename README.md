@@ -1,6 +1,6 @@
 # 🫁 Detector de COVID con Deep Learning
 
-Sistema completo de detección de neumonía usando radiografías de tórax con:
+Sistema completo de detección de COVID usando radiografías de tórax con:
 - **Backend**: Node.js + Express
 - **Frontend**: React + Vite
 - **ML**: Modelo Keras/TensorFlow (MobileNetV2)
