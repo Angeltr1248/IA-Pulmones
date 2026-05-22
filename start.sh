@@ -1,6 +1,6 @@
 #!/bin/bash
 
-echo "🚀 Iniciando Detector de Neumonía..."
+echo "🚀 Iniciando Detector de COvid..."
 echo ""
 
 # Verificar que exista el modelo
