@@ -6,20 +6,20 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y python3 python3-pip && rm -rf /var/lib/apt/lists/*
 
 # Copiar archivos
-COPY package.json package-lock.json ./
+COPY package.json ./
 COPY backend ./backend
 COPY frontend ./frontend
 COPY predecir.py ./
 COPY modelo_neumonia_deeplearning.keras ./
 
 # Instalar dependencias root
-RUN npm install
+RUN npm install --omit=dev
 
 # Instalar dependencias backend
 WORKDIR /app/backend
-RUN npm install
+RUN npm install --omit=dev
 
-# Volver a raíz e instalar frontend deps
+# Instalar y compilar frontend
 WORKDIR /app/frontend
 RUN npm install && npm run build
 
