@@ -1,4 +1,4 @@
-# 🫁 Detector de Neumonía con Deep Learning
+# 🫁 Detector de COVID con Deep Learning
 
 Sistema completo de detección de neumonía usando radiografías de tórax con:
 - **Backend**: Node.js + Express
