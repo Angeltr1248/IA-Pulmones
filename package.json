@@ -1,0 +1,17 @@
+{
+  "name": "pneumonia-detector",
+  "version": "1.0.0",
+  "description": "Pneumonia detection with Deep Learning - Full Stack App",
+  "type": "module",
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build",
+    "start": "npm run build && cd backend && npm install && node server-unified.js",
+    "dev": "concurrently \"cd backend && npm start\" \"cd frontend && npm run dev\""
+  },
+  "keywords": ["pneumonia", "detection", "deep-learning"],
+  "author": "Angeltr1248",
+  "license": "MIT",
+  "devDependencies": {
+    "concurrently": "^7.6.0"
+  }
+}

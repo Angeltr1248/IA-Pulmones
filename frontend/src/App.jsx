@@ -64,7 +64,7 @@ function App() {
     setError(null);
 
     try {
-      const response = await axios.post('http://localhost:3001/api/predict', formData, {
+      const response = await axios.post('/api/predict', formData, {
         headers: { 'Content-Type': 'multipart/form-data' }
       });
 
