@@ -5,22 +5,24 @@ const { spawn } = require('child_process');
 const fs = require('fs');
 const path = require('path');
 
-const __dirname = __dirname || path.dirname(require.main.filename);
-
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
 
 // Servir archivos estáticos del frontend
-app.use(express.static(path.join(__dirname, '../frontend/dist')));
+const distPath = path.join(__dirname, '../frontend/dist');
+if (fs.existsSync(distPath)) {
+  app.use(express.static(distPath));
+}
 
 // Configurar multer
 const upload = multer({ dest: 'uploads/' });
 
+// Crear carpeta uploads si no existe
 if (!fs.existsSync('uploads')) {
-  fs.mkdirSync('uploads');
+  fs.mkdirSync('uploads', { recursive: true });
 }
 
 // API de predicción
@@ -46,7 +48,10 @@ app.post('/api/predict', upload.single('image'), (req, res) => {
   });
 
   python.on('close', (code) => {
-    fs.unlink(imagePath, () => {});
+    // Limpiar archivo temporal
+    try {
+      fs.unlinkSync(imagePath);
+    } catch (e) {}
 
     if (code !== 0) {
       return res.status(500).json({
@@ -74,7 +79,12 @@ app.get('/api/health', (req, res) => {
 
 // Servir index.html para rutas desconocidas (SPA)
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, '../frontend/dist/index.html'));
+  const indexPath = path.join(__dirname, '../frontend/dist/index.html');
+  if (fs.existsSync(indexPath)) {
+    res.sendFile(indexPath);
+  } else {
+    res.status(404).json({ error: 'Frontend not found' });
+  }
 });
 
 app.listen(PORT, () => {
