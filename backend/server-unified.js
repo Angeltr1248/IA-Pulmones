@@ -59,6 +59,18 @@ app.post('/api/predict', upload.single('image'), (req, res) => {
   const imagePath = path.join(__dirname, req.file.path);
   const pythonScriptPath = path.join(__dirname, '..', 'predecir.py');
 
+  console.log(`🖼️  Prediciendo imagen: ${imagePath}`);
+  console.log(`🐍 Script Python: ${pythonScriptPath}`);
+  console.log(`✅ Script existe: ${fs.existsSync(pythonScriptPath)}`);
+
+  if (!fs.existsSync(pythonScriptPath)) {
+    try { fs.unlinkSync(imagePath); } catch (e) {}
+    return res.status(500).json({
+      error: 'Python script not found',
+      path: pythonScriptPath
+    });
+  }
+
   const python = spawn('python3', [pythonScriptPath, imagePath]);
 
   let dataOutput = '';
@@ -72,11 +84,24 @@ app.post('/api/predict', upload.single('image'), (req, res) => {
     errorOutput += data.toString();
   });
 
+  python.on('error', (err) => {
+    console.error(`❌ Python error:`, err);
+    try { fs.unlinkSync(imagePath); } catch (e) {}
+    res.status(500).json({
+      error: 'Failed to spawn Python process',
+      details: err.message
+    });
+  });
+
   python.on('close', (code) => {
     // Limpiar archivo temporal
     try {
       fs.unlinkSync(imagePath);
     } catch (e) {}
+
+    console.log(`🔍 Python exit code: ${code}`);
+    console.log(`📤 Output: ${dataOutput.substring(0, 200)}`);
+    console.log(`❌ Error: ${errorOutput.substring(0, 200)}`);
 
     if (code !== 0) {
       return res.status(500).json({
@@ -100,6 +125,26 @@ app.post('/api/predict', upload.single('image'), (req, res) => {
 // Health check
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
+});
+
+// Debug endpoint
+app.get('/api/debug', (req, res) => {
+  const appDir = __dirname;
+  const parentDir = path.join(appDir, '..');
+  const pythonScriptPath = path.join(parentDir, 'predecir.py');
+  const modelPath = path.join(parentDir, 'modelo_neumonia_deeplearning.keras');
+
+  res.json({
+    appDir: appDir,
+    parentDir: parentDir,
+    pythonScriptExists: fs.existsSync(pythonScriptPath),
+    modelExists: fs.existsSync(modelPath),
+    pythonScriptPath: pythonScriptPath,
+    modelPath: modelPath,
+    parentDirContents: fs.readdirSync(parentDir).slice(0, 20),
+    nodeVersion: process.version,
+    platform: process.platform
+  });
 });
 
 // Servir index.html para rutas desconocidas (SPA)
